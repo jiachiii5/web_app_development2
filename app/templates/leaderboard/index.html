@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card">
+    <h2 class="text-center mb-5 fw-bold">🏆 最佳成績排行榜</h2>
+    
+    {% if scores %}
+        <div class="table-responsive">
+            <table class="table table-borderless text-white mt-3 align-middle" style="background: transparent;">
+                <thead style="border-bottom: 2px solid rgba(255,255,255,0.2);">
+                    <tr class="text-white-50">
+                        <th class="py-3">名次</th>
+                        <th class="py-3">玩家名稱</th>
+                        <th class="py-3">猜測次數</th>
+                        <th class="py-3">達成時間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score in scores %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+                        <td class="py-3 fs-5">
+                            {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
+                        </td>
+                        <td class="fw-bold py-3 fs-5">{{ score.player_name }}</td>
+                        <td class="py-3"><span class="badge bg-info text-dark rounded-pill px-3 py-2 shadow-sm">{{ score.attempts }} 次</span></td>
+                        <td class="text-white-50 small py-3">{{ score.created_at[:16] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-5 my-4" style="background: rgba(0,0,0,0.2); border-radius: 15px;">
+            <div class="fs-1 mb-3">👻</div>
+            <h4 class="text-white-50 mb-3">目前尚無紀錄</h4>
+            <p class="text-white-50 mb-4">系統剛啟動，趕快去玩一場，成為第一個上榜的玩家吧！</p>
+            <a href="{{ url_for('game.index') }}" class="btn btn-primary btn-custom px-4 py-2">🎮 開始遊戲</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

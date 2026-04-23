@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card text-center">
+    <h2 class="mb-4 fw-bold">🎯 猜數字挑戰</h2>
+    
+    <p class="lead mb-4 text-white-50">系統已經選好了一個 1 到 100 之間的數字，試著猜猜看吧！</p>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 px-4 py-3 shadow-sm" style="background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+        <span class="fs-5">猜測次數：<strong class="text-info">{{ attempts }}</strong></span>
+        <span class="fs-5">狀態：
+            {% if game_over %}
+                <strong class="text-success">已結束</strong>
+            {% else %}
+                <strong class="text-warning">進行中</strong>
+            {% endif %}
+        </span>
+    </div>
+
+    {% if game_over %}
+        <div class="mt-4 pt-3">
+            <form action="{{ url_for('game.restart') }}" method="POST">
+                <button type="submit" class="btn btn-success btn-lg btn-custom w-100 py-3">🔄 再玩一次</button>
+            </form>
+        </div>
+    {% else %}
+        <form action="{{ url_for('game.guess') }}" method="POST" class="mt-4 text-start">
+            <div class="mb-3">
+                <label for="player_name" class="form-label text-white-50 small text-uppercase fw-bold">您的暱稱 (選填)</label>
+                <input type="text" class="form-control" id="player_name" name="player_name" placeholder="排行榜上顯示的名稱" value="匿名玩家">
+            </div>
+            <div class="mb-4">
+                <label for="guess" class="form-label text-white-50 small text-uppercase fw-bold">輸入你的猜測 (1-100)</label>
+                <input type="number" class="form-control form-control-lg text-center fw-bold fs-3" id="guess" name="guess" min="1" max="100" required autofocus placeholder="50">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-custom w-100 py-3 fs-5">🚀 猜！</button>
+        </form>
+    {% endif %}
+</div>
+
+{% if history %}
+<div class="glass-card mt-4 p-4">
+    <h4 class="mb-4 fw-bold">📝 猜測紀錄</h4>
+    <div class="history-list">
+        {% for item in history %}
+            <div class="history-item shadow-sm">
+                <span class="fs-5">你的猜測：<strong class="fs-4 ms-2">{{ item.guess }}</strong></span>
+                {% if item.result == '太大' %}
+                    <span class="badge bg-danger rounded-pill badge-result">⬆️ {{ item.result }}</span>
+                {% elif item.result == '太小' %}
+                    <span class="badge bg-warning text-dark rounded-pill badge-result">⬇️ {{ item.result }}</span>
+                {% else %}
+                    <span class="badge bg-success rounded-pill badge-result shadow-sm">🎉 {{ item.result }}</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
